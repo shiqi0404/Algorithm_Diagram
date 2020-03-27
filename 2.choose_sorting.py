@@ -14,6 +14,8 @@ Software:       PyCharm
                    2020/2/24:
 -------------------------------------------------
 """
+
+
 # 用来找出数组中最小元素的函数
 def findSmallest(arr):
     smallest = arr[0]   # 存储最小的值
@@ -23,6 +25,8 @@ def findSmallest(arr):
             smallest = arr[i]
             smallest_index = i
     return smallest_index
+
+
 # 选择排序算法
 def selectionSort(arr): # 对数组进行排序
     newArr = []
@@ -30,5 +34,7 @@ def selectionSort(arr): # 对数组进行排序
         smallest = findSmallest(arr)    # 找出数组中最小的元素，并将其加入到新数组中
         newArr.append(arr.pop(smallest))
     return newArr
+
+
 # 测试
 print selectionSort([5,3,6,2,10])

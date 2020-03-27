@@ -31,7 +31,7 @@ def binary_search(list, item):  # list数据包，目标元素item 注意写函�
     return None  # 没有指定的元素
 
 
-my_list = [1, 3, 5, 7, 9]  # 来测试一下！
-
+# 来测试一下！
+my_list = [1, 3, 5, 7, 9]
 print(binary_search(my_list, 3))  # => 1 别忘了索引从0开始，第二个位置的索引为1
 print(binary_search(my_list, -1))  # => None 在python中，None表示空，它意味着没有找到指定的元素
