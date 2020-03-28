@@ -1,0 +1,136 @@
+_*算法图解笔记——Chapter 3 递归*_  
+_Author:    Seven Zou_  
+_Email:     zoushiqi0404@gmail.com_  
+_Language:  Python2.7_
+* * *
+###3 递归
+本章节，也是书中作者着重讨论的部分。递归是很多算法都使用的一种编程方法。如何将问题分成基线条件和递归条件，是需要掌握的。
+* * *
+####3.1递归
+Case：借用书中的例子，假设有一手提箱，寻找底部盒子中的钥匙。  
+Solution 1：(while 循环: 只要盒子堆不空，就从中取一个盒子，并在其中仔细查找。)
+- 1.创建一个要查找的盒子堆
+- 2.从盒子堆取出一个盒子，在里面找。
+- 3.如果找到的是盒子，就将其加入盒子堆中，以便以后再查找。
+- 4.如果找到钥匙，则大功告成！
+- 5.回到第二步。
+  
+ ```python
+def look_for_key(main_box):
+    pile = main_box.make_a_pile_to_look_through()
+    while pile is not empty:
+        box = pile.grab_a_box()
+        for item in box:
+            if item.is_a_box():
+                pile.append(item)
+            elif item.is_a_key():
+                print "found the key!"
+```
+Solution 2：(递归, 函数调用自身)
+ - 1.检查盒子中的每样东西。
+ - 2.如果是盒子，就回到第一步。
+ - 3.如果是钥匙，就大功告成！
+ ```python
+# -*- coding: utf-8 -*-
+def look_for_key(box):
+    for item in box:
+        if item.is_a_box():
+            look_for_key(item)  # 递归
+        elif item.is_a_key():
+            print "found the key!"
+```
+* * *
+####3.2基线条件和递归条件
+在递归函数调用自身时，容易导致无限循环。e.g.如下编写倒计时的函数。运行之后，程序会一直运行。
+```python
+# -*- coding: utf-8 -*-
+# objective: 3...2...1
+def countdown(i):
+    print i
+    countdown(i-1)
+```
+所以需要加入条件避免形成无限循环，_基线条件_。所以每个递归函数都包含 _基线条件(Base Case)_ 和 _递归条件(Recursive Case)_，_递归条件_ 指的是函数自身，而 _基线条件_ 指的是函数不再调用自身。针对上述Case，可以改进。
+```python
+# -*- coding: utf-8 -*-
+def countdown(i):
+    print i
+    if i <= 0:  # 基线条件
+        return 
+    else:       # 递归条件
+        countdown(i-1)
+```
+```
+Input:  countdown(3)
+Output: 3
+        2
+        1
+        0
+```
+
+* * *
+####3.3 栈
+* * *
+#####3.3.1 调用栈
+- 调用栈(Call Stack)，一个重要的编程的概念。前面学了数组和链表，针对这两个操作而言，可以有 _插入_，_删除_ 和 _读取_ 。
+```python
+# -*- coding: utf-8 -*-
+def greet(name):    # 这个函数问候用户，再调用另外两个函数。
+    print "hello,"  + name +  "!"
+    greet2(name)
+    print "getting ready to say bye ..."
+    bye()
+
+
+def greet2(name):
+    print "how are you, " + name + "?"
+
+
+def bye():
+    print "ok bye!"
+``` 
+```
+Input:  greet("Steven")
+Output: hello,Steven!
+        how are you, Steven?
+        getting ready to say bye ...
+        ok bye!
+```
+
+计算机在内部使用被称为调用栈的 _**栈**_。 上述调用函数时发生如下过程：
+
+- 1.假设调用```greet("Steven)```，计算机首先为该函数调用分配一块内存。
+- 2.我们来使用这些内存。变量```name```被设置为```Steven```，这需要存储到内存中。
+- 3.接下来，打印```hello,Steven!```，再调用```greet2("Steven)```。同样，计算机也为这个函数调用分配一块内存。
+- 4.计算机使用一个栈来表示这些内存块，其中第二个内存卡位于第一个内存卡上面。打印```how are you, Steven?```，然后从函数调用返回。此时，栈顶的内存块被弹出。
+- 5.现在栈顶的内存块是函数```greet("Steven)```的，即 _又返回到了函数```greet("Steven)```，当调用函数```greet2("Steven)```时，函数```greet("Steven)```只执行了_**一部分**_。_(_**调用另一个函数时，当前函数暂停并处于未完成状态。**_)
+该函数的所有变量的值还存储在内存中。执行完函数```greet2("Steven)```后，回到函数```greet("Steven)```，并从离开的地方开始接着往下执行：首先打印```getting ready to say bye ...```，再调用函数```bye```。
+- 6.在栈顶添加函数```bye```的内存块。然后，打印```ok bye!```，并从这个函数返回。
+- 7.现在又返回到了函数```greet```。由于没有别的事情要做，就从函数```greet```返回。
+
+这个栈用于存储多个函数的变量，被称为调用栈。
+
+_Remark：根据个人理解，整个过程很像本科阶段学习单片机的_中断_功能。在以前给本科新生介绍_中断_时常用的例子就是“要去烧水时门铃响”。
+例子场景：你正准备拿着水壶去烧水，此刻门铃响，放下水壶去开门，开门结束后返回烧水的动作。不知比喻的恰不恰当，只是个人进行类比的理解。_
+* * *
+#####3.3.1 递归调用栈
+递归函数也使用 _调用栈_。 递归函数```factorial(5)```写作 $5!$($5!=5 \times 4 \times 3 \times 2 \times 1$)。其Code如下：
+```python
+def fact(x):
+    if x == 1:
+        return  1
+    else
+        return x * fact(x-1)
+```
+可以类比上述过程，就不作叙述了。
+
+* * *
+### Reference
+[美]Aditya Bhargava/袁国忠, 算法图解, 北京：人民邮电出版社, 2017.3.
+* * * 
+附个人Github地址: [https://github.com/shiqi0404/Algorithm_Diagram](https://github.com/shiqi0404/Algorithm_Diagram)，其中包括笔记、Code还有书本pdf版。
+
+
+
+
+
+ 
