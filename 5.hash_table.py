@@ -22,3 +22,10 @@ book["avocado"] = 1.49
 
 print book
 print book["avocado"]   # 鳄梨的价格
+
+phone_book = dict()     # 散列表
+# phone_book = {}       # 与前面等效
+phone_book["jenny"] = 8675309
+phone_book["emergency"] = 911
+
+print phone_book["jenny"]
