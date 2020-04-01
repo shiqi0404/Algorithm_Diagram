@@ -21,9 +21,19 @@ graph["bob"] = ["anuj", "peggy"]
 graph["alice"] = ["peggy"]
 graph["claire"] = ["thom", "jonny"]
 graph["anuj"] = []
-# 可以尝试更换以下顺序 看一下效果
-# graph["anuj"] = []
-# graph["claire"] = ["thom", "jonny"]
+graph["peggy"] = []
+graph["thom"] = []
+graph["jonny"] = []
+
+print graph
+
+# 更换  ["anuj"]  和  ["claire"] 顺序
+graph = dict()
+graph["you"] = ["alice", "bob", "claire"]
+graph["bob"] = ["anuj", "peggy"]
+graph["alice"] = ["peggy"]
+graph["anuj"] = []
+graph["claire"] = ["thom", "jonny"]
 graph["peggy"] = []
 graph["thom"] = []
 graph["jonny"] = []
